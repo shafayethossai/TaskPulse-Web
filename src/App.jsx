@@ -1,9 +1,25 @@
-function App() {
+import { Route, Routes } from "react-router-dom"
 
+import AppLayout from "./components/layout/AppLayout"
+import LoginPage from "./pages/LoginPage"
+import NotFoundPage from "./pages/NotFoundPage"
+import TaskDetailsPage from "./pages/TaskDetailsPage"
+import DashboardPage from "./pages/DashboardPage"
+import TasksPage from "./pages/TasksPage"
+
+function App() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-blue-600">TaskPulse</h1> inside your <div></div>
-    </div>
+    <Routes>
+        <Route path="/login" element={<LoginPage />} />
+
+        <Route element={<AppLayout/>} >
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/tasks" element={<TasksPage />} />
+          <Route path="/tasks/:id" element={<TaskDetailsPage />} />
+        </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   )
 }
 
