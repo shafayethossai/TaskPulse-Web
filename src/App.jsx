@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom"
+import ProtectedRoute from "./components/ProtectedRoute"
 
 import AppLayout from "./components/layout/AppLayout"
 import LoginPage from "./pages/LoginPage"
@@ -12,7 +13,12 @@ function App() {
     <Routes>
         <Route path="/login" element={<LoginPage />} />
 
-        <Route element={<AppLayout/>} >
+        <Route element={
+            <ProtectedRoute>
+              <AppLayout/>
+            </ProtectedRoute>
+          }
+        >
           <Route path="/" element={<DashboardPage />} />
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/tasks/:id" element={<TaskDetailsPage />} />
