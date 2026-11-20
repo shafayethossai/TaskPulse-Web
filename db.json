@@ -1,0 +1,21 @@
+{
+  "users": [
+    { "id": "1", "name": "Shafayat", "email": "demo@taskpulse.dev", "password": "123456" }
+  ],
+  "tasks": [
+    { "id": "1", "title": "Learn useEffect cleanup", "description": "Trace the AbortController example", "status": "done", "priority": "high", "dueDate": "2026-11-22", "createdAt": "2026-11-20T09:00:00Z" },
+    { "id": "2", "title": "Build Navbar and Sidebar", "description": "Responsive with Flexbox", "status": "in-progress", "priority": "medium", "dueDate": "2026-11-23", "createdAt": "2026-11-21T09:00:00Z" },
+    { "id": "3", "title": "Write useDebounce hook", "description": "Cancel old timer in cleanup", "status": "todo", "priority": "high", "dueDate": "2026-11-25", "createdAt": "2026-11-21T10:00:00Z" },
+    { "id": "4", "title": "Practice Grid layout", "description": "Stat cards with auto-fit", "status": "todo", "priority": "low", "dueDate": "2026-11-26", "createdAt": "2026-11-21T11:00:00Z" },
+    { "id": "5", "title": "Configure React Router nested routes", "description": "Wrap pages inside AppLayout using Outlet", "status": "done", "priority": "high", "dueDate": "2026-11-22", "createdAt": "2026-11-21T12:00:00Z" },
+    { "id": "6", "title": "Implement AuthContext provider", "description": "Persist JWT token in localStorage and expose useAuth hook", "status": "in-progress", "priority": "high", "dueDate": "2026-11-24", "createdAt": "2026-11-21T13:00:00Z" },
+    { "id": "7", "title": "Create ProtectedRoute wrapper", "description": "Redirect unauthenticated users to login page", "status": "todo", "priority": "high", "dueDate": "2026-11-24", "createdAt": "2026-11-21T14:00:00Z" },
+    { "id": "8", "title": "Add axios request interceptor", "description": "Attach Authorization Bearer header automatically", "status": "todo", "priority": "medium", "dueDate": "2026-11-25", "createdAt": "2026-11-21T15:00:00Z" },
+    { "id": "9", "title": "Build Skeleton loading cards", "description": "Show pulsing placeholders while fetching tasks", "status": "todo", "priority": "low", "dueDate": "2026-11-27", "createdAt": "2026-11-21T16:00:00Z" },
+    { "id": "10", "title": "Sync filters with URL search params", "description": "Use useSearchParams hook for page, status, and query", "status": "in-progress", "priority": "medium", "dueDate": "2026-11-28", "createdAt": "2026-11-21T17:00:00Z" },
+    { "id": "11", "title": "Create accessible Modal dialog", "description": "Close on Escape key and backdrop click, auto-focus title input", "status": "todo", "priority": "high", "dueDate": "2026-11-29", "createdAt": "2026-11-21T18:00:00Z" },
+    { "id": "12", "title": "Implement optimistic task completion", "description": "Update UI immediately and rollback on API error", "status": "todo", "priority": "medium", "dueDate": "2026-11-30", "createdAt": "2026-11-21T19:00:00Z" },
+    { "id": "13", "title": "Add click-outside DropdownMenu", "description": "Use useRef and mousedown event listener with cleanup", "status": "todo", "priority": "low", "dueDate": "2026-12-01", "createdAt": "2026-11-21T20:00:00Z" },
+    { "id": "14", "title": "Wrap routes in ErrorBoundary", "description": "Catch unexpected render errors gracefully with fallback UI", "status": "todo", "priority": "medium", "dueDate": "2026-12-02", "createdAt": "2026-11-21T21:00:00Z" }
+  ]
+}
