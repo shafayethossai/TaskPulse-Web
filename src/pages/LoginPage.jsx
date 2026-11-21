@@ -74,7 +74,6 @@ export default function LoginPage() {
                     {submitting ? "Loggin in..." : "Log In"}
                 </button>
             </form>
-
         </div>
     );
 }
