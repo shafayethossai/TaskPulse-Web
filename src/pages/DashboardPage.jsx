@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { getTasks } from "../api/tasks"
+import { getTasks, updateTask } from "../api/tasks"
 import TaskList from "../components/tasks/TaskList"
 import Skeleton from "../components/ui/Skeletion"
 import StateCard from '../components/tasks/StateCard';
@@ -9,6 +9,22 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [retryCount, setRetryCount] = useState(0);
+
+    const handleToggleStatus = async (taskId, nextStatus) => {
+        const previousTasks = tasks;
+        setTasks((currentTasks) =>
+            currentTasks.map((task) =>
+                task.id === taskId ? { ...task, status: nextStatus } : task
+            )
+        );
+
+        try {
+            await updateTask(taskId, { status: nextStatus });
+        } catch (err) {
+            setTasks(previousTasks);
+            alert(err.message || "Failed to update task status");
+        }
+    };
 
     useEffect(() => {
         const controller = new AbortController();
@@ -20,7 +36,7 @@ export default function DashboardPage() {
                 const res = await getTasks({}, controller.signal);
                 setTasks(res.data);
             } catch (err) {
-                if (err.name === "CanceledError" || err.name === "AbortError") retryCount;
+                if (err.name === "CanceledError" || err.name === "AbortError") return;
                 setError(err.message || "Failed to load dashboard");
             } finally {
                 if (!controller.signal.aborted) {
@@ -84,7 +100,7 @@ export default function DashboardPage() {
                         {recentTasks.length === 0 ? (
                             <p className="text-gray-500">No tasks yet</p>
                         ) : (
-                            <TaskList tasks={recentTasks}/>
+                            <TaskList tasks={recentTasks} onToggleStatus={handleToggleStatus}/>
                         )}
                     </div>
                 </>

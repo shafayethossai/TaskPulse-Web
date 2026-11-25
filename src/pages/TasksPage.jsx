@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { getTasks } from "../api/tasks";
+import { getTasks, createTask, updateTask } from "../api/tasks";
 import { useDebounce } from "../hooks/useDebounce";
 import TaskFilters from "../components/tasks/TaskFilters";
 import TaskList from "../components/tasks/TaskList";
+import TaskForm from "../components/tasks/TaskForm";
 import Pagination from "../components/ui/Pagination";
 import Skeleton from "../components/ui/Skeletion";
+import Modal from "../components/ui/Modal";
 
 const LIMIT = 6;
 
@@ -28,6 +30,9 @@ export default function TasksPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [retryCount, setRetryCount] = useState(0);
+
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+    const [creating, setCreating] = useState(false);
 
     //Update ?q= in URL after user pauses typing for 300ms
     useEffect(() => {
@@ -83,20 +88,52 @@ export default function TasksPage() {
         return (() => controller.abort());
     }, [page, query, status, priority, sort, retryCount]);
 
-    const handlePageChange = (newPage) => {
-        const next = new URLSearchParams(searchParams);
-        next.set('page', String(newPage));
-        setSearchParams(next);
+
+    const handleCreateTask = async (FormData) => {
+        try {
+            setCreating(true);
+            await createTask({
+                ...FormData,
+                createdAt: new Date().toISOString(),
+            });
+            setIsCreateOpen(false);
+            setRetryCount((c) => c + 1);
+        } catch (err) {
+            alert(err.message || 'Failed to create task');
+        } finally {
+            setCreating(false);
+        }
+    };
+
+    const handleToggleStatus = async (taskId, nextStatus) => {
+        const previousTasks = tasks;
+
+        setTasks((prev) => 
+            prev.map((t) => (t.id === taskId ? { ...t, status: nextStatus } : t))
+        );
+
+        try {
+            await updateTask(taskId, { status: nextStatus });
+        } catch (err) {
+            setTasks(previousTasks);
+            alert('Failed to update status. Reverted. ', err);
+        }
     };
 
     const handleFilterChange = (key, value) => {
         const next = new URLSearchParams(searchParams);
-        if (value === 'all') {
+        if (value === 'all' || (key === 'sort' && value === 'newest')) {
             next.delete(key);
         } else {
             next.set(key, value);
         }
         next.set('page', '1');
+        setSearchParams(next);
+    };
+
+    const handlePageChange = (newPage) => {
+        const next = new URLSearchParams(searchParams);
+        next.set('page', String(newPage));
         setSearchParams(next);
     };
 
@@ -110,8 +147,17 @@ export default function TasksPage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-gray-800"> All Tasks </h1>
-                <span className="text-sm text-gray-500">{totalCount} matching tasks </span>
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-800"> All Tasks </h1>
+                    <span className="text-sm text-gray-500">{totalCount} matching tasks </span>
+                </div>
+                
+                <button
+                    onClick={() => setIsCreateOpen(true)}
+                    className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700"
+                >
+                    + New Task
+                </button>
             </div>
 
             <TaskFilters 
@@ -146,7 +192,7 @@ export default function TasksPage() {
 
             {!loading && !error && tasks.length > 0 && (
                 <>
-                    <TaskList tasks={tasks}/>
+                    <TaskList tasks={tasks} onToggleStatus={handleToggleStatus}/>
                     <Pagination 
                         page={page}
                         totalPages={totalPages}
@@ -154,6 +200,18 @@ export default function TasksPage() {
                     />
                 </>
             )}
+
+            <Modal
+                isOpen={isCreateOpen}
+                onClose={() => setIsCreateOpen(false)}
+                title="Create New Task"
+            >
+                <TaskForm
+                    onSubmit={handleCreateTask}
+                    onCancel={() => setIsCreateOpen(false)}
+                    submitting={creating}
+                />
+            </Modal>
         </div>
     );
 }

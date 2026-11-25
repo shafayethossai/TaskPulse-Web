@@ -12,36 +12,44 @@ const priorityStyles = {
     high: 'bg-red-50 text-red-600',
 };
 
-export default function TaskCard({ task }) {
+export default function TaskCard({ task, onToggleStatus }) {
+    const handleQuickToggle = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const nextStatus = task.status === 'done' ? 'todo' : 'done';
+        onToggleStatus?.(task.id, nextStatus);
+    }
     return (
         <Link
             to={`/tasks/${task.id}`}
             className="block bg-white border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
         >
             <div className="flex items-start justify-between gap-2 mb-2">
-                <h3 className="font-semibold text-gray-800 line-clamp-1">
+                <h3 className={`font-semibold text-gray-800 line-clamp-1 ${
+                task.status === 'done' ? 'line-through text-gray-400' : ''}`}>
                     {task.title}
                 </h3>
-                <span 
-                    className={`text-xs px-2 py-0.5 rounded font-medium capitalize shrink-0 ${
-                        priorityStyles[task.priority] || 'bg-gray-100 text-gray-600'
-                    }`}
-                >
-                    {task.priority}
+                <span className={`text-xs px-2 py-0.5 rounded-full shrink-0 ${statusStyles[task.status]}`}>
+                    {task.status}
                 </span>
             </div>
 
-            <p className="text-sm text-gray-600 line-clamp-2 mb-4">{task.description}</p>
+            <p className="text-sm text-gray-600 line-clamp-2 mb-4">{task.description || 'No description'}</p>
 
-            <div className="flex items-center justify-between text-x">
-                <span 
-                    className={`px-2 py-0.5 rounded font-medium capitalize ${
-                        statusStyles[task.status] || 'bg-gray-100 text-gray-700'
-                    }`}
-                >
-                    {task.status}
+            <div className="flex items-center justify-between pt-2 border-t text-xs">
+                <span className={`capitalize ${priorityStyles[task.priority]}`}>
+                    {task.priority} priority
                 </span>
-                <span className="text-gray-400">Due: {task.dueDate}</span>
+                
+                {onToggleStatus && (
+                    <button
+                        type="button"
+                        onClick={handleQuickToggle}
+                        className="px-2 py-1 rounded border text-gray-600 hover:bg-gray-50"
+                    >
+                        {task.status === 'done' ? 'Reopen' : 'Mark Done'}
+                    </button>
+                )}
             </div>
         </Link>
     );
